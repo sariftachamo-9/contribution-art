@@ -1,0 +1,7 @@
+# Binaries and Installers
+*.exe
+*.msi
+
+# Temporary & Log files
+*.log
+scratch/
