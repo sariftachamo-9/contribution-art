@@ -267,7 +267,7 @@ const (
 // ---- CLI flags ----
 var (
 	pattern       = flag.String("pattern", "SARIF", "Text to draw on the heatmap")
-	startDate     = flag.String("start", "", "Start date (YYYY-MM-DD). Default = next Monday")
+	startDate     = flag.String("start", "", "Start date (YYYY-MM-DD). Default = nearest Monday")
 	commitsPerDay = flag.Int("commits", 3, "Number of commits per filled cell (1-10)")
 	dryRun        = flag.Bool("dry-run", false, "Preview the heatmap without creating commits")
 )
@@ -287,7 +287,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	// 1. Determine start date (next Monday by default)
+	// 1. Determine start date (Monday of current week or specified date)
 	start, err := getStartDate(*startDate)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "ERROR: invalid start date: %v\n", err)
@@ -317,7 +317,7 @@ func main() {
 
 // ---- helpers ----
 
-// getStartDate parses a YYYY-MM-DD string or returns next Monday in UTC.
+// getStartDate parses a YYYY-MM-DD string or returns the Monday of the current week (or upcoming Monday).
 func getStartDate(s string) (time.Time, error) {
 	if s != "" {
 		t, err := time.Parse("2006-01-02", s)
@@ -327,13 +327,11 @@ func getStartDate(s string) (time.Time, error) {
 		return t.UTC(), nil
 	}
 
-	// Default: next Monday in UTC
+	// Default: Monday of the current week (or nearest Monday)
 	now := time.Now().UTC()
 	weekday := now.Weekday()
 	daysUntilMonday := (8 - int(weekday)) % 7
-	if daysUntilMonday == 0 {
-		daysUntilMonday = 7
-	}
+	// If today is Monday (daysUntilMonday == 0), start today!
 	y, m, d := now.AddDate(0, 0, daysUntilMonday).Date()
 	return time.Date(y, m, d, 0, 0, 0, 0, time.UTC), nil
 }
