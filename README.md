@@ -17,7 +17,7 @@ The tool includes a built-in **dry-run mode** with colored terminal previews so 
 ### Terminal Heatmap Preview for "SARIF" (ANSI Colored)
 
 ```text
-Starting from: 2025-06-02
+Starting from: 2026-08-03
 
 Heatmap preview (7 rows = Sun–Sat):
 
@@ -42,13 +42,14 @@ Sat   ████   ██  ██  ██  ██ █████  ██
 - **Flexible Start Date**: Begins on the next Monday by default, or accepts custom dates (`YYYY-MM-DD`).
 - **Dry-Run Preview**: Displays an ANSI colored preview in your terminal without modifying repository history.
 - **Git Auto-Initialization**: Automatically initializes a `.git` repository if one does not exist.
+- **Convenient Run Helper**: Includes `run.bat` launcher script and standalone binary compilation.
 - **Zero External Dependencies**: Built strictly with standard Go libraries.
 
 ---
 
 ## Tech Stack
 
-- **Language**: Go 1.21+
+- **Language**: Go 1.21+ / Go 1.22+
 - **VCS**: Git
 - **Libraries**: Go Standard Library (`flag`, `fmt`, `os`, `os/exec`, `strings`, `time`)
 
@@ -81,7 +82,7 @@ Sat   ████   ██  ██  ██  ██ █████  ██
 ## Installation
 
 ### Prerequisites
-- [Go 1.21+](https://go.dev/dl/) installed.
+- [Go 1.21+](https://go.dev/dl/) installed (or portable Go SDK).
 - [Git](https://git-scm.com/) installed and configured in your system `PATH`.
 
 ### Clone & Build
@@ -90,8 +91,8 @@ Sat   ████   ██  ██  ██  ██ █████  ██
 git clone https://github.com/sariftachamo-9/contribution-art.git
 cd contribution-art
 
-# Build the executable binary
-go build -o sarif main.go
+# Build the executable binary (sarif.exe)
+go build -o sarif.exe main.go
 ```
 
 ---
@@ -109,19 +110,31 @@ go build -o sarif main.go
 
 ## Usage
 
-### 1. Preview a Pattern (Dry Run)
+### 1. Run using Helper Launcher Script (`run.bat`)
 ```bash
+# Preview mode (dry-run)
+.\run.bat -pattern "SARIF" -dry-run
+
+# Generate commits
+.\run.bat -pattern "SARIF" -commits 5
+```
+
+### 2. Run using Standalone Binary (`sarif.exe`)
+```bash
+# Build the binary
+go build -o sarif.exe main.go
+
+# Execute directly
+.\sarif.exe -pattern "SARIF" -dry-run
+```
+
+### 3. Run directly with Go CLI
+```bash
+# Preview mode
 go run main.go -pattern "SARIF" -dry-run
-```
 
-### 2. Generate Commits from Next Monday
-```bash
-go run main.go -pattern "SARIF" -commits 5
-```
-
-### 3. Generate Commits Starting from a Specific Date
-```bash
-go run main.go -pattern "ART" -start 2025-06-01 -commits 4
+# Custom pattern & start date
+go run main.go -pattern "SARIF" -start 2025-06-01 -commits 4
 ```
 
 ### 4. Push Commits to GitHub
@@ -141,6 +154,8 @@ contribution-art/
 ├── main_test.go       # Unit and integration test suite
 ├── go.mod             # Go module definition
 ├── Makefile           # Build automation tasks (build, test, fmt, clean)
+├── run.bat            # Helper launcher script for quick execution
+├── .gitignore         # Git ignore rules for compiled binaries & installers
 ├── README.md          # Comprehensive user & developer documentation
 ├── prd.md             # Product Requirements Document
 ├── architecture.md    # High-Level Architecture specifications
